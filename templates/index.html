@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iris Intelligence | AI Classifier</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
+    
+    <!-- SEO & Performance Tags -->
+    <meta name="description" content="A state-of-the-art Iris flower species classifier built with machine learning. Accuracy, Speed, and Elegance.">
+    
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    
+    <!-- Lucide Icons (Premium alternative to FontAwesome) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <!-- Dynamic Animated Background -->
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="app-container">
+        
+        <!-- Part 1: Hero and Form Section -->
+        <section class="glass-card header-section">
+            <div class="badge">Machine Learning Engine v2.0</div>
+                        <h1>IRIS INTELLIGENCE</h1>
+            <p class="description">
+                Experience the precision of botanical classification. Our Random Forest model analyzes floral morphology with 98% accuracy.
+            </p>
+
+            {% if error %}
+            <div class="error-msg">
+                <i data-lucide="alert-circle" style="width: 18px;"></i>
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <form action="/predict" method="post" class="form-grid">
+                <!-- Sepal Length -->
+                <div class="input-group">
+                    <label for="sepal_length">
+                        <i data-lucide="move-vertical" style="width: 14px; margin-right: 4px;"></i>
+                        Sepal Length (cm)
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="number" id="sepal_length" name="sepal_length" 
+                               step="0.1" min="0" max="15" 
+                               value="{{ sepal_length if sepal_length else '5.1' }}" required>
+                    </div>
+                </div>
+
+                <!-- Sepal Width -->
+                <div class="input-group">
+                    <label for="sepal_width">
+                        <i data-lucide="move-horizontal" style="width: 14px; margin-right: 4px;"></i>
+                        Sepal Width (cm)
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="number" id="sepal_width" name="sepal_width" 
+                               step="0.1" min="0" max="15" 
+                               value="{{ sepal_width if sepal_width else '3.5' }}" required>
+                    </div>
+                </div>
+
+                <!-- Petal Length -->
+                <div class="input-group">
+                    <label for="petal_length">
+                        <i data-lucide="zoom-in" style="width: 14px; margin-right: 4px;"></i>
+                        Petal Length (cm)
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="number" id="petal_length" name="petal_length" 
+                               step="0.1" min="0" max="15" 
+                               value="{{ petal_length if petal_length else '1.4' }}" required>
+                    </div>
+                </div>
+
+                <!-- Petal Width -->
+                <div class="input-group">
+                    <label for="petal_width">
+                        <i data-lucide="scaling" style="width: 14px; margin-right: 4px;"></i>
+                        Petal Width (cm)
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="number" id="petal_width" name="petal_width" 
+                               step="0.1" min="0" max="15" 
+                               value="{{ petal_width if petal_width else '0.2' }}" required>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="submit" class="predict-btn" style="flex: 2; margin-top: 0;">
+                        <span>Botanical Analysis</span>
+                        <i data-lucide="sparkles" class="btn-icon"></i>
+                    </button>
+                    <button type="reset" class="predict-btn" style="flex: 1; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); margin-top: 0;">
+                        <i data-lucide="rotate-ccw" class="btn-icon"></i>
+                    </button>
+                </div>
+            </form>
+
+            <div class="feature-info" style="margin-top: 1.5rem; display: flex; gap: 0.8rem; flex-wrap: wrap;">
+                <span class="feature-tag"># Flora-Ready</span>
+                <span class="feature-tag"># RF Enabled</span>
+                <span class="feature-tag"># Real-time</span>
+            </div>
+        </section>
+
+        <!-- Part 2: Results & Visualization Section -->
+        <section class="glass-card results-section">
+            {% if prediction %}
+                <div class="result-header">
+                    <div class="result-label">The Classified Species is</div>
+                    <div class="species-name" style="display: flex; align-items: center; justify-content: center; gap: 0.8rem;">
+                         {% if prediction == 'setosa' %} <i data-lucide="flower" style="stroke: var(--primary);"></i>
+                         {% elif prediction == 'versicolor' %} <i data-lucide="flower-2" style="stroke: var(--secondary);"></i>
+                         {% else %} <i data-lucide="leaf" style="stroke: var(--accent);"></i>
+                         {% endif %}
+                         {{ prediction|capitalize }}
+                    </div>
+                </div>
+
+                <div class="prob-container">
+                    {% for species, prob in probabilities.items() %}
+                    <div class="prob-item {{ 'winner' if species == prediction else '' }}">
+                        <div class="prob-top">
+                            <span class="species-type">{{ species|capitalize }}</span>
+                            <span class="percentage">{{ "%.1f"|format(prob) }}%</span>
+                        </div>
+                        <div class="prob-bar-bg">
+                            <div class="prob-bar-fill" data-percentage="{{ prob }}"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="feature-info" style="margin-top: 2rem; padding: 1rem; background: rgba(255, 255, 255, 0.03); border-radius: 1rem; border: 1px solid var(--border);">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; color: var(--primary);">
+                        <i data-lucide="info" style="width: 14px;"></i>
+                        <span style="font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">Botanical Insight</span>
+                    </div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
+                        {% if prediction == 'setosa' %}
+                            Iris setosa is distinguished by its small petals and broad sepals. It is the most genetically distinct of the three species.
+                        {% elif prediction == 'versicolor' %}
+                            Iris versicolor, the "Harlequin Iris", presents moderate morphological traits, often acting as a middle-ground in classification.
+                        {% elif prediction == 'virginica' %}
+                            Iris virginica is known for its robust size and large petals. It typically requires high moisture environments to thrive.
+                        {% endif %}
+                    </p>
+                </div>
+
+                <p style="margin-top: 1.5rem; font-size: 0.75rem; color: #475569; text-align: center;">
+                    Ensemble decision path across 100 deep-growth forest trees.
+                </p>
+                
+            {% else %}
+                <div class="empty-results">
+                    <div class="pulsing-icon">🌸</div>
+                    <h3 style="margin-bottom: 0.5rem;">Awaiting Analysis</h3>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">
+                        Enter morphology data to trigger the AI inference engine.
+                    </p>
+                </div>
+            {% endif %}
+        </section>
+
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
