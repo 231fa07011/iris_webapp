@@ -83,11 +83,17 @@ async function handlePredict() {
     let aggregatedProbs = [0, 0, 0];
     
     modelData.trees.forEach(tree => {
-        const treeResult = walkTree(tree, features);
-        // treeResult is [p0, p1, p2]
-        aggregatedProbs[0] += treeResult[0];
-        aggregatedProbs[1] += treeResult[1];
-        aggregatedProbs[2] += treeResult[2];
+        const leafResult = walkTree(tree, features);
+        // leafResult is typically an array within an array [[count_0, count_1, count_2]] in scikit-learn
+        const counts = Array.isArray(leafResult[0]) ? leafResult[0] : leafResult;
+        
+        // Normalize counts to probabilities (0-1) for this tree
+        const sum = counts.reduce((a, b) => a + b, 0);
+        const probs = sum > 0 ? counts.map(x => x / sum) : [0, 0, 0];
+
+        aggregatedProbs[0] += probs[0];
+        aggregatedProbs[1] += probs[1];
+        aggregatedProbs[2] += probs[2];
     });
 
     // Average the probabilities across all trees
