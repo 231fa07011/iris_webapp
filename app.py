@@ -8,6 +8,8 @@ import os
 from flask import Flask, jsonify, render_template, request # type: ignore
 import joblib           # type: ignore
 import numpy as np       # type: ignore
+import json
+from datetime import datetime
 from sklearn.ensemble import RandomForestClassifier         # type: ignore
 
 
@@ -44,6 +46,34 @@ def load_ml_resources():
         print(f"❌ Critical error during model initialization: {str(e)}")
         model = None
 
+# Persistence Layer for Prediction History
+HISTORY_FILE = 'prediction_history.json'
+
+def load_history():
+    """Loads prediction history from a persistent JSON file."""
+    if os.path.exists(HISTORY_FILE):
+        try:
+            with open(HISTORY_FILE, 'r') as f:
+                return json.load(f)[-10:] # Return last 10
+        except: return []
+    return []
+
+def save_prediction(data):
+    """Saves a new prediction entry to history."""
+    history = []
+    if os.path.exists(HISTORY_FILE):
+        try:
+            with open(HISTORY_FILE, 'r') as f:
+                history = json.load(f)
+        except: pass
+    
+    data['timestamp'] = datetime.now().strftime("%H:%M:%S")
+    history.append(data)
+    
+    # Keep last 50 records
+    with open(HISTORY_FILE, 'w') as f:
+        json.dump(history[-50:], f, indent=2)
+
 # Initialize resources on startup
 load_ml_resources()
 
@@ -51,9 +81,10 @@ load_ml_resources()
 @app.route('/')
 def home():
     """
-    Render the home page with the input form.
+    Render the home page with the input form and historical data.
     """
-    return render_template('index.html')
+    history = load_history()
+    return render_template('index.html', history=history)
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -93,13 +124,23 @@ def predict():
         # Sort results by confidence
         sorted_probs = dict(sorted(prob_dict.items(), key=lambda item: item[1], reverse=True))
 
+        # Persistent Logging
+        save_prediction({
+            'prediction': prediction,
+            'features': input_data,
+            'confidence': max(probabilities) * 100
+        })
+
+        history = load_history()
+
         return render_template('index.html', 
                              prediction=prediction,
                              probabilities=sorted_probs,
                              sepal_length=sl,
                              sepal_width=sw,
                              petal_length=pl,
-                             petal_width=pw)
+                             petal_width=pw,
+                             history=history)
 
     except ValueError:
         return render_template('index.html', error="Invalid numerical format in morphological data.")
