@@ -1,0 +1,1 @@
+ & "c:/Users/MY PC/OneDrive/Desktop/Mounii/PROJECTS/iris_webapp/.venv/Scripts/python.exe" "c:/Users/MY PC/OneDrive/Desktop/Mounii/PROJECTS/iris_webapp/app.py"
