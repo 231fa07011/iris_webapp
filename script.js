@@ -5,7 +5,7 @@ let modelData = null;
 document.addEventListener('DOMContentLoaded', async () => {
     // 🌸 1. Load Model Data
     try {
-        const response = await fetch('model_data.json');
+        const response = await fetch('model_data.json?v=2.2');
         modelData = await response.json();
         console.log('✅ Botanical Intelligence loaded.');
     } catch (err) {
