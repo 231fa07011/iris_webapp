@@ -47,8 +47,7 @@ def load_ml_resources():
 # Initialize resources on startup
 load_ml_resources()
 
-# Step 3.3: Define the home page route
-# ------------------------------------
+# Application Routes
 @app.route('/')
 def home():
     """
@@ -108,8 +107,7 @@ def predict():
         print(f"🤖 Inference error: {str(e)}")
         return render_template('index.html', error="Interference detected in neural inference path.")
 
-# Step 3.5: Add an API endpoint (optional, for programmatic access)
-# ----------------------------------------------------------------
+# API Endpoints
 @app.route('/api/predict', methods=['POST'])
 def api_predict():
     """
@@ -145,8 +143,7 @@ def api_predict():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
-# Step 3.6: Add a simple test route
-# --------------------------------
+# Utility Routes
 @app.route('/test')
 def test():
     """
