@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iris Intelligence | AI Classifier</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
+    
+    <!-- SEO & Performance Tags -->
+    <meta name="description" content="A state-of-the-art Iris flower species classifier built with machine learning. Accuracy, Speed, and Elegance.">
+    
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="static/css/main.css">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <!-- Dynamic Animated Background -->
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="app-container">
+        
+        <!-- Hero and Form Section -->
+        <section class="glass-card header-section">
+            <div class="badge">Machine Learning Engine v2.1 (Spring Update)</div>
+            <h1>IRIS INTELLIGENCE</h1>
+            <p class="description">
+                Experience the precision of botanical classification. Our client-side Random Forest model analyzes floral morphology with 98% accuracy.
+            </p>
+
+            <div id="error-container" class="error-msg" style="display: none;">
+                <i data-lucide="alert-circle" style="width: 18px;"></i>
+                <span id="error-text"></span>
+            </div>
+
+            <form id="prediction-form" class="form-grid" onsubmit="event.preventDefault(); handlePredict();">
+                <!-- Sepal Length -->
+                <div class="input-group">
+                    <label for="sepal_length">
+                        <i data-lucide="move-vertical" style="width: 14px; margin-right: 4px;"></i>
+                        Sepal Length (cm)
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="number" id="sepal_length" name="sepal_length" 
+                               step="0.1" min="0" max="15" 
+                               value="5.1" required>
+                    </div>
+                </div>
+
+                <!-- Sepal Width -->
+                <div class="input-group">
+                    <label for="sepal_width">
+                        <i data-lucide="move-horizontal" style="width: 14px; margin-right: 4px;"></i>
+                        Sepal Width (cm)
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="number" id="sepal_width" name="sepal_width" 
+                               step="0.1" min="0" max="15" 
+                               value="3.5" required>
+                    </div>
+                </div>
+
+                <!-- Petal Length -->
+                <div class="input-group">
+                    <label for="petal_length">
+                        <i data-lucide="zoom-in" style="width: 14px; margin-right: 4px;"></i>
+                        Petal Length (cm)
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="number" id="petal_length" name="petal_length" 
+                               step="0.1" min="0" max="15" 
+                               value="1.4" required>
+                    </div>
+                </div>
+
+                <!-- Petal Width -->
+                <div class="input-group">
+                    <label for="petal_width">
+                        <i data-lucide="scaling" style="width: 14px; margin-right: 4px;"></i>
+                        Petal Width (cm)
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="number" id="petal_width" name="petal_width" 
+                               step="0.1" min="0" max="15" 
+                               value="0.2" required>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="submit" class="predict-btn" style="flex: 2; margin-top: 0;">
+                        <span>Botanical Analysis</span>
+                        <i data-lucide="sparkles" class="btn-icon"></i>
+                    </button>
+                    <button type="reset" class="predict-btn" style="flex: 1; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); margin-top: 0;">
+                        <i data-lucide="rotate-ccw" class="btn-icon"></i>
+                    </button>
+                </div>
+            </form>
+
+            <div class="feature-info" style="margin-top: 1.5rem; display: flex; gap: 0.8rem; flex-wrap: wrap;">
+                <span class="feature-tag"># Static Mode</span>
+                <span class="feature-tag"># client-side AI</span>
+                <span class="feature-tag"># High Performance</span>
+            </div>
+        </section>
+
+        <!-- Results & Visualization Section -->
+        <section class="glass-card results-section" id="results-display">
+            <div class="empty-results">
+                <div class="pulsing-icon">🌸</div>
+                <h3 style="margin-bottom: 0.5rem;">Awaiting Analysis</h3>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">
+                    Enter morphology data to trigger the AI inference engine.
+                </p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+    <script src="static/js/main.js"></script>
+</body>
+</html>
